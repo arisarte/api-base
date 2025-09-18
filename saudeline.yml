@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  saudeline-api:
+    image: node:18
+    working_dir: /app
+    command: sh -c "npm install && npm run dev"
+    volumes:
+      - ./:/app
+    networks:
+      - traefik-public
+    environment:
+      PORT: 4000
+      CORS_ORIGIN: https://api.saudeline.arisarte.online
+      DB_HOST: mariadb_saudeline
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: MinhaSenhaNova123
+      DB_NAME: saudeline
+      JWT_SECRET: 938275087
+      JWT_EXPIRES_IN: 1h
+      REFRESH_TOKEN_EXPIRES_IN: 7d
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == central
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.saudeline-api.rule=Host(`api.saudeline.arisarte.online`)
+        - traefik.http.routers.saudeline-api.entrypoints=websecure
+        - traefik.http.routers.saudeline-api.tls=true
+        - traefik.http.routers.saudeline-api.tls.certresolver=le
+        - traefik.http.services.saudeline-api.loadbalancer.server.port=4000
+
+networks:
+  traefik-public:
+    external: true
