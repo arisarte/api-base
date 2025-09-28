@@ -1,0 +1,36 @@
+### Auth: Register
+POST http://localhost:4000/v1/auth/register
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "email": "alice@example.local",
+  "password": "secret123"
+}
+
+### Auth: Login
+POST http://localhost:4000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.local",
+  "password": "secret123"
+}
+
+### Comments: Create (requires Authorization header - set from login response)
+POST http://localhost:4000/v1/comments
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "article_id": 5,
+  "content": "Ótimo artigo!"
+}
+
+### Comments: List by article (public)
+GET http://localhost:4000/v1/comments/article/5
+
+### Comments: Delete (requires owner or admin)
+DELETE http://localhost:4000/v1/comments/1
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
