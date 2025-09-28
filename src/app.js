@@ -17,6 +17,8 @@ import authRoutes from './routes/auth.routes.js';
 import articlesRoutes from './routes/articles.routes.js';
 import categoriesRoutes from './routes/categories.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
+import usersRoutes from './routes/users.routes.js';
+import commentsRoutes from './routes/comments.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -58,6 +60,8 @@ export function buildApp() {
   app.register(articlesRoutes, { prefix: '/v1/articles' });
   app.register(categoriesRoutes, { prefix: '/v1/categories' });
   app.register(uploadRoutes, { prefix: '/v1/upload' });
+  app.register(usersRoutes, { prefix: '/v1/users' });
+  app.register(commentsRoutes, { prefix: '/v1/comments' });
 
   return app;
 }

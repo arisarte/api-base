@@ -82,7 +82,28 @@ export async function initDatabase() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       CONSTRAINT fk_user_refresh FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
+    
+    -- comments: may reference articles table which may or may not exist in this project
+    CREATE TABLE IF NOT EXISTS comments (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id INT NOT NULL,
+      article_id INT NOT NULL,
+      content TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
   `);
+
+  // try adding FK constraints if articles table exists
+  try {
+    await db.query(`ALTER TABLE comments ADD CONSTRAINT fk_comments_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE`);
+  } catch (e) {
+    // ignore if already exists or articles table missing
+  }
+  try {
+    await db.query(`ALTER TABLE comments ADD CONSTRAINT fk_comments_article FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE`);
+  } catch (e) {
+    // ignore if articles table missing or constraint exists
+  }
 
   console.log('✅ Tabelas mínimas (users, refresh_tokens) garantidas');
 
