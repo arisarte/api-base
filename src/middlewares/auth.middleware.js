@@ -1,17 +1,20 @@
-import { authService } from '../services/auth.service.js';
+import jwt from 'jsonwebtoken';
 
-export async function verifyJWT(req, reply) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    reply.code(401).send({ success: false, message: 'Token ausente ou inválido' });
-    return;
-  }
+export function authMiddleware(req, reply, done) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return reply.code(401).send({ error: 'Token não fornecido' });
 
   const token = authHeader.split(' ')[1];
+  if (!token) return reply.code(401).send({ error: 'Token inválido' });
 
   try {
-    req.user = authService.verify(token);
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = payload; // guarda usuário no request
+    done();
   } catch (err) {
-    reply.code(401).send({ success: false, message: 'Token expirado ou inválido' });
+    return reply.code(401).send({ error: 'Token expirado ou inválido' });
   }
 }
+
+// Compatibilidade retroativa: algumas rotas importavam `verifyJWT`
+export const verifyJWT = authMiddleware;

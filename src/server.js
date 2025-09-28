@@ -7,6 +7,7 @@ dotenv.config();
 // 2️⃣ Imports principais
 import { buildApp } from './app.js';
 import { env } from './config/env.js';
+import { initDatabase } from './db/init.js';
 
 // 3️⃣ Tratamento global de erros não capturados
 process.on('uncaughtException', (err) => {
@@ -25,17 +26,25 @@ if (!env.port) {
   process.exit(1);
 }
 
-// 5️⃣ Inicialização do app Fastify
-const app = buildApp();
-
-// 6️⃣ Start do servidor
-app.listen({ port: env.port, host: '0.0.0.0' })
+// 5️⃣ Inicialização do banco (garante DB/tabelas/usuário seed)
+initDatabase()
   .then(() => {
-    app.log.info(`🚀 API Saudeline iniciada com sucesso`);
-    app.log.info(`📡 Escutando em http://0.0.0.0:${env.port}`);
+    // 6️⃣ Inicialização do app Fastify
+    const app = buildApp();
+
+    // 7️⃣ Start do servidor
+    app.listen({ port: env.port, host: '0.0.0.0' })
+      .then(() => {
+        app.log.info(`🚀 API Saudeline iniciada com sucesso`);
+        app.log.info(`📡 Escutando em http://0.0.0.0:${env.port}`);
+      })
+      .catch((err) => {
+        console.error('❌ Erro ao iniciar o servidor:', err); // imprime stack trace
+        process.exit(1);
+      });
   })
   .catch((err) => {
-    console.error('❌ Erro ao iniciar o servidor:', err); // imprime stack trace
+    console.error('❌ Falha ao inicializar o banco de dados:', err);
     process.exit(1);
   });
 

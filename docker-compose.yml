@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: api-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${DB_NAME:-api_base}
+      MYSQL_USER: ${DB_USER:-api_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-api_pass}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mariadb
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+
+volumes:
+  mariadb-data:
+
+version: '3.8'
+
+services:
+	mariadb:
+		image: mariadb:10.11
+		container_name: api-mariadb
+		restart: unless-stopped
+		environment:
+			MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpass}
+			MYSQL_DATABASE: ${DB_NAME:-api_base}
+			MYSQL_USER: ${DB_USER:-api_user}
+			MYSQL_PASSWORD: ${DB_PASSWORD:-api_pass}
+		ports:
+			- "3306:3306"
+		volumes:
+			- mariadb-data:/var/lib/mysql
+
+	api:
+		build:
+			context: .
+			dockerfile: Dockerfile
+		container_name: api-app
+		restart: unless-stopped
+		env_file:
+			- .env
+		ports:
+			- "4000:4000"
+		depends_on:
+			- mariadb
+		volumes:
+			- ./:/usr/src/app
+			- /usr/src/app/node_modules
+
+volumes:
+	mariadb-data:
+
