@@ -38,6 +38,21 @@ Categories
 
 ---
 
+Newsletter
+- POST /v1/newsletter/subscribe      -> subscribe with { email }
+- POST /v1/newsletter/unsubscribe    -> unsubscribe with { email }
+
+Cookies
+- POST /v1/cookies/accept            -> save cookie consent { consent: { analytics: boolean } }
+- GET  /v1/cookies/policy            -> get public cookie policy
+
+Webstories
+- GET  /v1/webstories                -> list webstories (public)
+- GET  /v1/webstories/:id            -> get single webstory (public)
+- POST /v1/webstories                -> create webstory (admin only, auth)
+- DELETE /v1/webstories/:id         -> delete webstory (admin only, auth)
+
+
 Authentication notes
 - All modifying endpoints require Authorization: Bearer <accessToken> header.
 - Access tokens expire (default 1h). Use the refresh token endpoints to rotate and obtain new tokens.
@@ -80,7 +95,7 @@ CREATE TABLE users (
 );
 ```
 
-- comments table:
+- comments table, 
 ```sql
 CREATE TABLE comments (
 	id INT AUTO_INCREMENT PRIMARY KEY,

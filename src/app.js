@@ -19,6 +19,9 @@ import categoriesRoutes from './routes/categories.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
 import usersRoutes from './routes/users.routes.js';
 import commentsRoutes from './routes/comments.routes.js';
+import newsletterRoutes from './routes/newsletter.routes.js';
+import cookiesRoutes from './routes/cookies.routes.js';
+import webstoriesRoutes from './routes/webstories.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -62,6 +65,9 @@ export function buildApp() {
   app.register(uploadRoutes, { prefix: '/v1/upload' });
   app.register(usersRoutes, { prefix: '/v1/users' });
   app.register(commentsRoutes, { prefix: '/v1/comments' });
+  app.register(newsletterRoutes, { prefix: '/v1/newsletter' });
+  app.register(cookiesRoutes, { prefix: '/v1/cookies' });
+  app.register(webstoriesRoutes, { prefix: '/v1/webstories' });
 
   return app;
 }

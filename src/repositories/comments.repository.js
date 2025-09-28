@@ -21,6 +21,16 @@ export const commentsRepository = {
     return rows;
   },
 
+  async findAll() {
+    const [rows] = await pool.query(
+      `SELECT c.id, c.user_id, u.name AS user_name, c.article_id, c.content, c.created_at
+       FROM comments c
+       JOIN users u ON u.id = c.user_id
+       ORDER BY c.created_at DESC`
+    );
+    return rows;
+  },
+
   async findById(id) {
     const [rows] = await pool.query('SELECT * FROM comments WHERE id = ?', [id]);
     return rows[0] || null;
